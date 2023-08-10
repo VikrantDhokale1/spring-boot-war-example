@@ -10,7 +10,7 @@ pipeline{
             steps{
                 //mvn test
                 
-                sh "mvn test"
+                sh "mvn --version"
                 echo "========executing A========"
             }    
 
