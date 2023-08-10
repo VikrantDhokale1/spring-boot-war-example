@@ -1,57 +1,43 @@
-pipeline {
+pipeline{
     agent any
-     tools {
+    tools {
         maven 'Maven' 
-        }
-    stages {
-        stage("Test"){
+    }
+    stages{
+        stage("test"){
             steps{
-                // mvn test
-                sh "mvn test"
-                slackSend channel: 'youtubejenkins', message: 'Job Started'
+                //mvn test
                 
-            }
-            
+                sh "mvn test"
+                echo "========executing A========"
+            }    
+
         }
         stage("Build"){
             steps{
+                //mvn package
                 sh "mvn package"
-                
+                echo "========executing A========"
             }
             
         }
-        stage("Deploy on Test"){
+        stage("Deploy on the test server"){
             steps{
-                // deploy on container -> plugin
-                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails1', path: '', url: 'http://192.168.0.118:8080')], contextPath: '/app', war: '**/*.war'
-              
+                //deploy on container ->plugin
+                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://34.16.132.236:8080')], contextPath: '/app', war: '**/*.war'
+                echo "========executing A========"
             }
             
         }
-        stage("Deploy on Prod"){
-             input {
-                message "Should we continue?"
-                ok "Yes we Should"
-            }
-            
+        stage("Deploy on the prod server"){
             steps{
-                // deploy on container -> plugin
-                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails1', path: '', url: 'http://192.168.0.119:8080')], contextPath: '/app', war: '**/*.war'
-
+                //deploy on container ->plugin
+                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://34.16.158.166:8080')], contextPath: '/app', war: '**/*.war'
+                echo "========executing A========"
             }
+            
         }
-    }
-    post{
-        always{
-            echo "========always========"
-        }
-        success{
-            echo "========pipeline executed successfully ========"
-             slackSend channel: 'youtubejenkins', message: 'Success'
-        }
-        failure{
-            echo "========pipeline execution failed========"
-             slackSend channel: 'youtubejenkins', message: 'Job Failed'
-        }
+        
     }
 }
+            
